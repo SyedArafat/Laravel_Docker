@@ -1,4 +1,4 @@
-version: "3"
+version: "3.2"
 services:
     redis:
         image: redis:5.0.0-alpine
@@ -30,6 +30,8 @@ services:
             MYSQL_DATABASE: mydb
         ports:
             - "3306:3306"
+        volumes:
+            - /data/mysql:/var/lib/mysql
         networks:
             myapp_net:
                 ipv4_address: 172.16.238.11
