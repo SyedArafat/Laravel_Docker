@@ -8,7 +8,7 @@ services:
             - 6379:6379
         networks:
              myapp_net:
-                 ipv4_address: 172.16.238.13
+
     es:
         image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
         restart: always
@@ -19,7 +19,7 @@ services:
             - 9200:9200
         networks:
             myapp_net:
-                ipv4_address: 172.16.238.10
+
     db:
         image: mysql:5.7.24
         restart: always
@@ -34,7 +34,7 @@ services:
             - /data/mysql:/var/lib/mysql
         networks:
             myapp_net:
-                ipv4_address: 172.16.238.11
+
     app:
         build: .
         restart: always
@@ -49,19 +49,17 @@ services:
             - .:/var/www/myapp
         networks:
             myapp_net:
-                ipv4_address: 172.16.238.12
+
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         links:
           - db
-        environment:
-          PMA_HOST: mysql-db
-          PMA_PORT: 3306
+        depends_on:
+          - db
         ports:
-          - '8080:8080'
+          - '8080:80'
         networks:
             myapp_net:
-                ipv4_address: 172.16.238.14
 
 volumes:
     web-app:
@@ -71,5 +69,3 @@ networks:
         driver: bridge
         ipam:
             driver: default
-            config:
-                - subnet: 172.16.238.0/24
