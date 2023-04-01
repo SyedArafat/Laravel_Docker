@@ -1,14 +1,14 @@
 version: "3.2"
 services:
-    redis:
-        image: redis:5.0.0-alpine
-        restart: always
-        container_name: myapp-redis
-        ports:
-            - 6379:6379
-        networks:
-             myapp_net:
-                 ipv4_address: 172.16.238.13
+#    redis:
+#        image: redis:5.0.0-alpine
+#        restart: always
+#        container_name: myapp-redis
+#        ports:
+#            - 6379:6379
+#        networks:
+#             myapp_net:
+#                 ipv4_address: 172.16.238.13
     es:
         image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
         restart: always
@@ -22,6 +22,7 @@ services:
                 ipv4_address: 172.16.238.10
     db:
         image: mysql:5.7.24
+#        platform: linux/x86_64
         restart: always
         container_name: myapp-db
         command: --default-authentication-plugin=mysql_native_password
@@ -29,9 +30,12 @@ services:
             MYSQL_ROOT_PASSWORD: secret
             MYSQL_DATABASE: mydb
         ports:
-            - "3306:3306"
+            - "3116:3306"
         volumes:
-            - /data/mysql:/var/lib/mysql
+          # For Mac and also give appropriate permission to /private/mysql folder
+          - /private/mysql:/var/lib/mysql
+      # For ubuntu
+      #   - /data/mysql:/var/lib/mysql
         networks:
             myapp_net:
                 ipv4_address: 172.16.238.11
@@ -41,10 +45,10 @@ services:
         container_name: myapp-web
         depends_on:
             - db
-            - redis
+#            - redis
             - es
         ports:
-            - "8888:80"
+            - "8101:80"
         volumes:
             - .:/var/www/myapp
         networks:
